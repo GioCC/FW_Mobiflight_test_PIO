@@ -1,5 +1,5 @@
   /**
-    * Includes Core Arduino functionality 
+    * Includes Core Arduino functionality
     **/
   #if ARDUINO < 100
   #include <WProgram.h>
@@ -8,18 +8,27 @@
   #endif
 #include "TicksPerSecond.h"
 
-void TicksPerSecond::initialize(int holdLastTimeoutMillis) {
+void TicksPerSecond::resetCounters(void) {
 	lastTime = millis();
 	for (byte i = 0; i < TPS_TIMES_PER_PERIOD; i++) {
 		counters[i] = 0;
-		started[i] = lastTime;
+		started[i]  = lastTime;
 	}
 	curCounter = 0;
-	deltaTime = holdLastTimeoutMillis / TPS_TIMES_PER_PERIOD;
 }
 
-void TicksPerSecond::update(boolean tick) {
+void TicksPerSecond::initialize(int holdLastTimeoutMillis) {
+  resetCounters();
+	lastClient = 0;
+	deltaTime  = holdLastTimeoutMillis / TPS_TIMES_PER_PERIOD;
+}
+
+void TicksPerSecond::update(uint8_t client, boolean tick) {
 	long now = millis();
+	if(client != lastClient) {
+    resetCounters();
+    lastClient = client;
+	}
 	if (now - lastTime >= deltaTime) {
 		counters[curCounter] = 0;
 		lastTime = started[curCounter++] = now;

@@ -1,3 +1,10 @@
+// Ticks Per Second class - computes the frequency of variation of a logical state.
+//
+// 18.01.2018 modified by Giorgio Croci Candiani:
+//            allow a TPS object to be shared between several "clients",
+//            in order to save memory when these clients can be assumed to be active just one at a time.
+
+
 #ifndef TicksPerSecond_h
 #define TicksPerSecond_h
 
@@ -49,6 +56,13 @@ private:
 	 */
 	volatile float tps;
 
+	/**
+	 * ID of last client that called update()
+	 */
+	uint8_t lastClient;
+
+	void resetCounters(void);
+
 public:
 	/**
 	 * Initializes the class.
@@ -62,6 +76,14 @@ public:
 
 	/**
 	 * Calculates and updates the ticks per second value.
+   * This update() version that takes an additional argument (unitNo) identifyng the client;
+   * this allows to reset counters when the TPS is switched from one client to another.
+   * See "regular" update() for details.
+	 */
+	void update(uint8_t client, boolean tick = true);
+
+	/**
+	 * Calculates and updates the ticks per second value.
 	 * The update() method should be called as frequent as possible. The method can
 	 * be called from an interrupt if applicable. If the method is called from
 	 * interrupt the "safe" methods getTPS(), getIntTPS() for getting the ticks per
@@ -71,7 +93,7 @@ public:
 	 * 		Indicates if the invocation of the method should cause a ticking or
 	 * 		is just to update the ticks per second value.
 	 */
-	void update(boolean tick = true);
+	void update(boolean tick = true) { update(0, tick); };
 
 	/**
 	 * Returns the ticks per second value.

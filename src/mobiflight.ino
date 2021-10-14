@@ -139,7 +139,8 @@ const char version[8] = "1.11.2";
 #include <LedControl.h>
 #include <Button.h>
 #include <TicksPerSecond.h>
-#include <RotaryEncoder.h>
+#include <RotaryEncoderShd.h>
+//#include <RotaryEncoder.h>
 #include <Wire.h>
 
 #if MF_SEGMENT_SUPPORT == 1
@@ -555,11 +556,11 @@ void AddEncoder(uint8_t pin1 = 1, uint8_t pin2 = 2, uint8_t encoder_type = 0, ch
   encoders[encodersRegistered] = MFEncoder();
   encoders[encodersRegistered].attach(pin1, pin2, encoder_type, name);
 
-//  if(encodersRegistered==0) MFEncoder::attachHandler(handlerOnEncoder);
-  encoders[encodersRegistered].attachHandler(encLeft, handlerOnEncoder);
-  encoders[encodersRegistered].attachHandler(encLeftFast, handlerOnEncoder);
-  encoders[encodersRegistered].attachHandler(encRight, handlerOnEncoder);
-  encoders[encodersRegistered].attachHandler(encRightFast, handlerOnEncoder);
+  if(encodersRegistered==0) MFEncoder::attachHandler(handlerOnEncoder);
+//   encoders[encodersRegistered].attachHandler(encLeft, handlerOnEncoder);
+//   encoders[encodersRegistered].attachHandler(encLeftFast, handlerOnEncoder);
+//   encoders[encodersRegistered].attachHandler(encRight, handlerOnEncoder);
+//   encoders[encodersRegistered].attachHandler(encRightFast, handlerOnEncoder);
 
   registerPin(pin1, kTypeEncoder); 
   registerPin(pin2, kTypeEncoder);    
